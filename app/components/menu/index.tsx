@@ -1,10 +1,11 @@
 "use client"
-
 import useMenuHandler from "./hooks/use-menu-handler";
 import { routes } from "@/app/routes";
 import Link from "next/link";
-
+import { usePathname } from "next/navigation";
 export default function Menu(){
+
+    const pathname = usePathname();
 
     const { isOpen } = useMenuHandler();
 
@@ -25,15 +26,23 @@ export default function Menu(){
                     </header>
 
                     { routes.map( item => (
-                        <details className="font-bold style-none mt-5" open>
+                        <details className="font-bold style-none mt-5 flex" open>
         
-                            <summary className="cursor-pointer bg-blue-400 rounded-lg p-2">{item.title}</summary>
+                            <summary className="cursor-pointer bg-blue-400 rounded-lg p-2">
+                                <Link href={item?.option ?? ""}>{item.title}</Link>
+                            </summary>
         
-                            { item?.options && item.options.map( option => (
-        
-                                <Link href={option.path} className="pl-5 cursor-pointer mt-3">{option.option}</Link>
-        
-                            ))}
+                                { item?.options && item.options.map( option => (
+            
+                                    <Link 
+                                        href={option.path} 
+                                        className={`pl-5 pr-5 rounded-md cursor-pointer mt-3 ${
+                                            pathname === option.path ? "bg-red-500" : "" }`
+                                        }>
+                                            {option.option}
+                                    </Link>
+            
+                                ))}
             
                         </details>
                     ))}

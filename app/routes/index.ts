@@ -2,6 +2,7 @@
 interface IRoutes {
 
     title: string
+    option?: string
     options?: Array<{
         option: string
         path: string
@@ -17,6 +18,7 @@ export const routes: IRoutes [] = [
 
     {
         title:"Produtos",
+        option:"/products",
         options:[
             {
                 option:"Computadores",
