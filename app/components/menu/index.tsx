@@ -1,18 +1,14 @@
 "use client"
 
 import useMenuHandler from "./hooks/use-menu-handler";
-import { useRouter } from "next/navigation"
 import { routes } from "@/app/routes";
+import Link from "next/link";
 
 export default function Menu(){
 
     const { isOpen } = useMenuHandler();
 
     const { handlers:[ open, close ] } = isOpen;
-
-    const router = useRouter();
-
-    const handleRoute = (path: string) => router.push(path);
 
     return (
         
@@ -35,9 +31,7 @@ export default function Menu(){
         
                             { item?.options && item.options.map( option => (
         
-                                <p onClick={ () => (
-                                    handleRoute(option.path)
-                                ) } className="pl-5 cursor-pointer mt-3">{option.option}</p>
+                                <Link href={option.path} className="pl-5 cursor-pointer mt-3">{option.option}</Link>
         
                             ))}
             
