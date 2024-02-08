@@ -1,35 +1,63 @@
 "use client"
-import { products } from "@/app/mocks/products"
-import toBRL from "@/app/helpers/to-brl"
+import { IProduct, products as products_ } from "@/app/mocks/products"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import ProductSkeleton from "./components/product/skeleton"
+import fakeApiRequest from "@/app/helpers/fake-api-request"
+import dynamic from "next/dynamic"
+import { io } from "socket.io-client"
+
+const Product = dynamic(() => import('./components/product'), {
+  ssr:false,
+  loading: () => <ProductSkeleton/>,
+});
 
 export default function Products(){
+
+    const [ products, setProducts ] = useState<IProduct []>([]);
 
     const router = useRouter();
 
     const gotoProduct = (path: string) => router.push(`/products/${path}`);
 
+    async function obtainProductsFakeRequest(){
+
+        await fakeApiRequest(3000);
+
+        setProducts(products_)
+
+    }
+
+    useEffect( () => {
+
+        obtainProductsFakeRequest();
+
+    },[]);
+
+    useEffect( () => {
+
+        const socket = io("ws://localhost:3003",{
+            autoConnect:true,
+        });
+
+        // socket.on("welcome", () => async ( data: any) => {
+        //     await data;
+        //     console.log("foi")
+        // });
+
+        () => socket.close();
+
+    },[]);
+
     return (
-        <div className="flex gap-5 w-full flex-wrap p-10">
+        <div className="flex items-center justify-center gap-5 flex-wrap p-10 pb-[150px]">
 
             { products.map( product => (
-                <div onClick={ () => gotoProduct(product.title)} key={product.title} className="flex w-[30%] h-[200px] justify-center items-center rounded-sm bg-white">
-
-                    <img
-                        width={200}
-                        height={200} 
-                        alt={product.title} 
-                        src={product.image}/>
-
-                    <div className="text-start p-5 font-bold">
-
-                        <h3>{product.title}</h3>
-
-                        <span>{toBRL(product.value)}</span>
-
-                    </div>
-
-                </div>
+                <Product 
+                    key={product.id} 
+                    product={product} 
+                    gotoProduct={gotoProduct}
+                />
             ))}
 
         </div>

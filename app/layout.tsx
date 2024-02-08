@@ -25,7 +25,7 @@ export default function RootLayout({
 
             <Menu/>
 
-            <div className="w-full relative h-screen overflow-scroll flex flex-col items-center pt-[100px] bg-slate-200">
+            <div className="w-full relative h-screen overflow-scroll flex flex-col items-center justify-center pt-[100px] bg-slate-200">
 
                 <CurrentPath/>
 

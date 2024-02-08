@@ -1,25 +1,25 @@
 import { useState } from "react";
 
-export default function useMenuHandler(){
+export default function useMenuHandler(size: string){
 
-    const [ isOpen, setIsOpen ] = useState(true);
+    const [ menuWidth, setMenuWith ] = useState(size);
 
     function handleMenuOpen(){
 
-        setIsOpen(true);
+        setMenuWith(size);
 
     }
 
     function handleMenuClose(){
 
-        setIsOpen(false);
+        setMenuWith("w-[5%]");
 
     }
 
     return {
-        isOpen:{
-            getter: isOpen,
-            setter: setIsOpen,
+        menuWidth:{
+            getter: menuWidth,
+            setter: setMenuWith,
             handlers:[
                 handleMenuOpen,
                 handleMenuClose
