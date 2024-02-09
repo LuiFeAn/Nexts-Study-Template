@@ -6,6 +6,7 @@ import ProductSkeleton from "./components/product/skeleton"
 import fakeApiRequest from "@/app/helpers/fake-api-request"
 import dynamic from "next/dynamic"
 import { io } from "socket.io-client"
+import { fakeProductApi } from "@/app/services/product-fake-api"
 
 const Product = dynamic(() => import('./components/product'), {
   ssr:false,
@@ -28,9 +29,30 @@ export default function Products(){
 
     }
 
+    async function obtainProducts(){
+
+        try{
+
+            const response = await fakeProductApi.get("/products",{
+                params:{
+                    page:1,
+                    quanty:10
+                }
+            });
+
+            setProducts(response.data.products);
+
+        }catch(err){
+
+        }finally{
+
+        }
+
+    }
+
     useEffect( () => {
 
-        obtainProductsFakeRequest();
+        obtainProducts()
 
     },[]);
 
@@ -40,10 +62,7 @@ export default function Products(){
             autoConnect:true,
         });
 
-        // socket.on("welcome", () => async ( data: any) => {
-        //     await data;
-        //     console.log("foi")
-        // });
+        socket.on("new-product", async() => await obtainProducts() );
 
         () => socket.close();
 
@@ -52,7 +71,7 @@ export default function Products(){
     return (
         <div className="flex items-center justify-center gap-5 flex-wrap p-10 pb-[150px]">
 
-            { products.map( product => (
+            { products.length > 0 && products.map( product => (
                 <Product 
                     key={product.id} 
                     product={product} 
